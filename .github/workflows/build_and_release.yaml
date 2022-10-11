@@ -64,7 +64,8 @@ jobs:
           prerelease: false
 
       - uses: actions/download-artifact@v3
-        path: artifacts
+        with:
+          path: artifacts
       #- name: Download artifact Linux
       #  uses: actions/download-artifact@v3
       #  with:
