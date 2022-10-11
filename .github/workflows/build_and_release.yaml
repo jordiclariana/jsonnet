@@ -29,14 +29,14 @@ jobs:
           - os: macOS-latest
             os_name: darwin
     steps:
-      #- name: Cache build
-      #  uses: actions/cache@v3
-      #  id: cache_build
-      #  with:
-      #    path: .
-      #    key: build
-      #    restore-keys: |
-      #      build
+      - name: Cache build
+        uses: actions/cache@v3
+        id: cache_build
+        with:
+          path: .
+          key: build
+          restore-keys: |
+            build
 
       - name: checkout self repo
         uses: actions/checkout@v3
@@ -57,7 +57,7 @@ jobs:
     needs:
       - version
       - build
-    permissions: write-all
+    #permissions: write-all
       #actions: read
       #contents: write
     name: Create Release
@@ -76,13 +76,6 @@ jobs:
 
       - uses: actions/download-artifact@v3
         id: download
-        with:
-          path: artifacts
-
-      - run:
-          set -x
-          find . -type f -ls
-          find "${{ steps.download.outputs.download-path }}" -type f -ls
 
       - name: Upload Release Asset Linux
         uses: actions/upload-release-asset@v1
