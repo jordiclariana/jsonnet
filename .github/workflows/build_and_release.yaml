@@ -49,6 +49,7 @@ jobs:
     needs:
       - version
       - build
+    permissions: read-all
     name: Create Release
     runs-on: ubuntu-latest
     steps:
