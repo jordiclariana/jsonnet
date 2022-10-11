@@ -8,8 +8,31 @@ jobs:
       - name: checkout self repo
         uses: actions/checkout@v3
 
-      - id: build
-        name: Build
+      - name: Build
+        id: build
         run: |
           set -ex
-          make bins
+          VERSION=$(grep '#define.*LIB_JSONNET_VERSION' include/libjsonnet.h | head -n 1 | cut -f 2 -d '"' | sed 's/^v//g')
+          make -j dist
+          echo "::set-output name=VERSION::${VERSION}"
+          env
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.build.outptus.version }}
+          release_name: v${{ steps.build.outptus.version }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./jsonnet-bin.tar.gz
+          asset_name: jsonnet-bin-v${{ steps.build.outptus.version }}-linux.tar.gz
+          asset_content_type: application/octet-stream
