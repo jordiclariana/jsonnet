@@ -22,7 +22,7 @@ jobs:
         id: version
         run: |
           VERSION=$(grep '#define.*LIB_JSONNET_VERSION' include/libjsonnet.h | head -n 1 | cut -f 2 -d '"' | sed 's/^v//g')
-          echo "::set-output name=VERSION::${version}"
+          echo "::set-output name=version::${VERSION}"
 
       - name: Build
         id: build
