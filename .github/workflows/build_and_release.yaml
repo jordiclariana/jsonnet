@@ -64,6 +64,7 @@ jobs:
           prerelease: false
 
       - uses: actions/download-artifact@v3
+        path: artifacts
       #- name: Download artifact Linux
       #  uses: actions/download-artifact@v3
       #  with:
@@ -73,7 +74,11 @@ jobs:
       #  with:
       #    name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
 
-      - run: ls -lrt
+      - run: |
+          set -x
+          ls -lrt
+          ls -lrt artifacts
+          pwd
 
       - name: Upload Release Asset Linux
         uses: actions/upload-release-asset@v1
@@ -81,7 +86,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
+          asset_path: ./artifacts/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_content_type: application/octet-stream
 
@@ -91,7 +96,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
+          asset_path: ./artifacts/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_content_type: application/octet-stream
 
