@@ -6,17 +6,17 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: checkout self repo
+        uses: actions/checkout@v3
+
       - name: Cache build
         uses: actions/cache@v3
         id: cache_build
         with:
           path: .
-          key: build
+          key: build-${{ hashFiles('include/libjsonnet.h') }}
           restore-keys: |
-            build
-
-      - name: checkout self repo
-        uses: actions/checkout@v3
+            build-${{ hashFiles('include/libjsonnet.h') }}
 
       - name: Get version
         id: version
