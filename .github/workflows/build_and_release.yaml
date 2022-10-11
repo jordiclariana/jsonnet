@@ -32,11 +32,19 @@ jobs:
       - name: checkout self repo
         uses: actions/checkout@v3
 
+      #- name: Cache build
+      #  uses: actions/cache@v3
+      #  id: cache_build
+      #  with:
+      #    path: .
+      #    key: build-
+      #    restore-keys: |
+      #      build-
+
       - name: Build
         id: build
         run: |
           make -j dist
-          # ${{ matrix.env }} cmake . -Bbuild && ${{ matrix.env }} cmake  --build build -j
 
       - name: Upload Artifact
         id: upload_artifact
@@ -70,11 +78,6 @@ jobs:
         id: download
         with:
           path: artifacts
-      - run: |
-          set -x
-          ls -lrt
-          ls -lrt artifacts
-          pwd
 
       - name: Upload Release Asset Linux
         uses: actions/upload-release-asset@v1
@@ -82,7 +85,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
+          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_content_type: application/octet-stream
 
@@ -92,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
+          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_content_type: application/octet-stream
 
