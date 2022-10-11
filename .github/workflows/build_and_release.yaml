@@ -63,14 +63,17 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Download artifact Darwin
-        uses: actions/download-artifact@v3
-        with:
-          name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
-      - name: Download artifact Darwin
-        uses: actions/download-artifact@v3
-        with:
-          name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
+      - uses: actions/download-artifact@v3
+      #- name: Download artifact Linux
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
+      #- name: Download artifact Darwin
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
+
+      - run: ls -lrt
 
       - name: Upload Release Asset Linux
         uses: actions/upload-release-asset@v1
