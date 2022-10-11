@@ -49,9 +49,9 @@ jobs:
     needs:
       - version
       - build
-    permissions:
-      actions: read
-      contents: write
+    permissions: write-all
+      #actions: read
+      #contents: write
     name: Create Release
     runs-on: ubuntu-latest
     steps:
