@@ -1,0 +1,11 @@
+on:
+  push
+
+jobs:
+  build:
+    steps:
+      id: build
+      name: Build
+      run: |
+        set -ex
+        make bins
