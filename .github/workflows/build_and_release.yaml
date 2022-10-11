@@ -10,20 +10,23 @@ jobs:
 
       - name: Build
         id: build
+        env:
+          COMPILER_NAME: clang
+          CXX: clang++-11
+          CC: clang-11
         run: |
           set -ex
           VERSION=$(grep '#define.*LIB_JSONNET_VERSION' include/libjsonnet.h | head -n 1 | cut -f 2 -d '"' | sed 's/^v//g')
           make -j dist
           echo "::set-output name=VERSION::${VERSION}"
-          env
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.build.outptus.version }}
-          release_name: v${{ steps.build.outptus.version }}
+          tag_name: v${{ steps.build.outptus.VERSION }}
+          release_name: v${{ steps.build.outptus.VERSION }}
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -34,5 +37,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./jsonnet-bin.tar.gz
-          asset_name: jsonnet-bin-v${{ steps.build.outptus.version }}-linux.tar.gz
+          asset_name: jsonnet-bin-v${{ steps.build.outptus.VERSION }}-linux.tar.gz
           asset_content_type: application/octet-stream
