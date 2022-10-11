@@ -2,32 +2,9 @@ on:
   push
 
 jobs:
-  version:
-    name: Get release version
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.VERSION}}
-    steps:
-      - name: checkout self repo
-        uses: actions/checkout@v3
-
-      - name: Get version
-        id: version
-        run: |
-          VERSION=$(grep '#define.*LIB_JSONNET_VERSION' include/libjsonnet.h | head -n 1 | cut -f 2 -d '"' | sed 's/^v//g')
-          echo "::set-output name=VERSION::${VERSION}"
-
   build:
     name: Build
-    needs: version
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            os_name: linux
-          - os: macOS-latest
-            os_name: darwin
+    runs-on: ubuntu-latest
     steps:
       - name: Cache build
         uses: actions/cache@v3
@@ -41,28 +18,17 @@ jobs:
       - name: checkout self repo
         uses: actions/checkout@v3
 
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep '#define.*LIB_JSONNET_VERSION' include/libjsonnet.h | head -n 1 | cut -f 2 -d '"' | sed 's/^v//g')
+          echo "::set-output name=VERSION::${version}"
+
       - name: Build
         id: build
         run: |
           make -j dist
 
-      - name: Upload Artifact
-        id: upload_artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: jsonnet-bin-v${{ needs.version.outputs.version }}-${{ matrix.os_name }}
-          path: ./jsonnet-bin.tar.gz
-          retention-days: 1
-  release:
-    needs:
-      - version
-      - build
-    #permissions: write-all
-      #actions: read
-      #contents: write
-    name: Create Release
-    runs-on: ubuntu-latest
-    steps:
       - name: Create Release
         id: release
         uses: actions/create-release@v1
@@ -74,26 +40,12 @@ jobs:
           draft: false
           prerelease: false
 
-      - uses: actions/download-artifact@v3
-        id: download
-
-      - name: Upload Release Asset Linux
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.download.outputs.download-path }}/jsonnet-bin-v${{ needs.version.outputs.version }}-linux/jsonnet-bin.tar.gz
-          asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
+          asset_path: jsonnet-bin.tar.gz
+          asset_name: jsonnet-bin-v${{ steps.version.outputs.version }}-linux.tar.gz
           asset_content_type: application/octet-stream
-
-      - name: Upload Release Asset Darwin
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.download.outputs.download-path }}/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin/jsonnet-bin.tar.gz
-          asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
-          asset_content_type: application/octet-stream
-
