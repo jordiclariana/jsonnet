@@ -5,6 +5,9 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
+      - name: checkout self repo
+        uses: actions/checkout@v3
+
       - id: build
         name: Build
         run: |
