@@ -77,7 +77,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
+          upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: ./jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_content_type: application/octet-stream
@@ -87,7 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
+          upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: ./jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_content_type: application/octet-stream
