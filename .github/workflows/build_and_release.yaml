@@ -50,7 +50,8 @@ jobs:
       - version
       - build
     permissions:
-      actions: write
+      actions: read
+      contents: write
     name: Create Release
     runs-on: ubuntu-latest
     steps:
