@@ -64,17 +64,9 @@ jobs:
           prerelease: false
 
       - uses: actions/download-artifact@v3
+        id: download
         with:
           path: artifacts
-      #- name: Download artifact Linux
-      #  uses: actions/download-artifact@v3
-      #  with:
-      #    name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
-      #- name: Download artifact Darwin
-      #  uses: actions/download-artifact@v3
-      #  with:
-      #    name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
-
       - run: |
           set -x
           ls -lrt
@@ -87,7 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./artifacts/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
+          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_content_type: application/octet-stream
 
@@ -97,7 +89,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./artifacts/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
+          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_content_type: application/octet-stream
 
