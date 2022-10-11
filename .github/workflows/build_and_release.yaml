@@ -10,10 +10,6 @@ jobs:
 
       - name: Build
         id: build
-        env:
-          COMPILER_NAME: clang
-          CXX: clang++-11
-          CC: clang-11
         run: |
           set -ex
           VERSION=$(grep '#define.*LIB_JSONNET_VERSION' include/libjsonnet.h | head -n 1 | cut -f 2 -d '"' | sed 's/^v//g')
