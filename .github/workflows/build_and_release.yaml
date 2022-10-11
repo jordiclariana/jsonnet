@@ -26,8 +26,10 @@ jobs:
         include:
           - os: ubuntu-latest
             os_name: linux
+            env: ''
           - os: macOS-latest
             os_name: darwin
+            env: 'CC=gcc-9 CXX=g++-9'
     steps:
       - name: checkout self repo
         uses: actions/checkout@v3
@@ -35,7 +37,7 @@ jobs:
       - name: Build
         id: build
         run: |
-          cmake . -Bbuild && cmake  --build build -j
+          ${{ matrix.env }} cmake . -Bbuild && ${{ matrix.env }} cmake  --build build -j
 
       - name: Upload Artifact
         id: upload_artifact
