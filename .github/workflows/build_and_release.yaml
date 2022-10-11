@@ -29,17 +29,17 @@ jobs:
           - os: macOS-latest
             os_name: darwin
     steps:
-      - name: checkout self repo
-        uses: actions/checkout@v3
-
       #- name: Cache build
       #  uses: actions/cache@v3
       #  id: cache_build
       #  with:
       #    path: .
-      #    key: build-
+      #    key: build
       #    restore-keys: |
-      #      build-
+      #      build
+
+      - name: checkout self repo
+        uses: actions/checkout@v3
 
       - name: Build
         id: build
@@ -50,7 +50,7 @@ jobs:
         id: upload_artifact
         uses: actions/upload-artifact@v3
         with:
-          name: jsonnet-bin-v${{ needs.version.outputs.version }}-${{ matrix.os_name }}.tar.gz
+          name: jsonnet-bin-v${{ needs.version.outputs.version }}-${{ matrix.os_name }}
           path: ./jsonnet-bin.tar.gz
           retention-days: 1
   release:
@@ -80,7 +80,9 @@ jobs:
           path: artifacts
 
       - run:
+          set -x
           find . -type f -ls
+          find "${{ steps.download.outputs.download-path }}" -type f -ls
 
       - name: Upload Release Asset Linux
         uses: actions/upload-release-asset@v1
@@ -88,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
+          asset_path: ${{ steps.download.outputs.download-path }}/jsonnet-bin-v${{ needs.version.outputs.version }}-linux/jsonnet-bin.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-linux.tar.gz
           asset_content_type: application/octet-stream
 
@@ -98,7 +100,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.download.outputs.download-path}}/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
+          asset_path: ${{ steps.download.outputs.download-path }}/jsonnet-bin-v${{ needs.version.outputs.version }}-darwin/jsonnet-bin.tar.gz
           asset_name: jsonnet-bin-v${{ needs.version.outputs.version }}-darwin.tar.gz
           asset_content_type: application/octet-stream
 
